@@ -47,8 +47,13 @@ if cocoapods are used in the project then pod has to be installed as well:
 ### Extra step for Android
 
 
-```
+Update your MainApplication with below code.
 
+```
+com.yourpackage.app
+// other dependencies
+...
+// !important
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,22 +62,18 @@ import java.util.Map;
 
 public class MainApplication extends Application implements ReactApplication {
 
-  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-    @Override
-    public boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
-    }
-
+    // 
+    ...
+    
     @Override
     protected List<ReactPackage> getPackages() {
-
+      // !important
       final Map<String, Object> constants = new HashMap<>();
-
       Field[] fields = BuildConfig.class.getDeclaredFields();
       for (Field f : fields) {
         try {
           constants.put(f.getName(), f.get(null));
-          Log.d("RN_CONFIG", f.getName() + f.get(null));
+          // Log.d("RN_CONFIG", f.getName() + f.get(null));
         } catch (IllegalAccessException e) {
           Log.e("ReactNativeConfig", "Could not access BuildConfig field " + f.getName());
         }
