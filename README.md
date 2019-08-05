@@ -46,6 +46,46 @@ if cocoapods are used in the project then pod has to be installed as well:
 
 ### Extra step for Android
 
+
+```
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class MainApplication extends Application implements ReactApplication {
+
+  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+    @Override
+    public boolean getUseDeveloperSupport() {
+      return BuildConfig.DEBUG;
+    }
+
+    @Override
+    protected List<ReactPackage> getPackages() {
+
+      final Map<String, Object> constants = new HashMap<>();
+
+      Field[] fields = BuildConfig.class.getDeclaredFields();
+      for (Field f : fields) {
+        try {
+          constants.put(f.getName(), f.get(null));
+          Log.d("RN_CONFIG", f.getName() + f.get(null));
+        } catch (IllegalAccessException e) {
+          Log.e("ReactNativeConfig", "Could not access BuildConfig field " + f.getName());
+        }
+      }
+
+      return Arrays.<ReactPackage>asList(
+            new MainReactPackage(),
+            new ReactNativeConfigPackage(constants),
+ 
+```
+
+
+
 You'll also need to manually apply a plugin to your app, from `android/app/build.gradle`:
 
 ```
