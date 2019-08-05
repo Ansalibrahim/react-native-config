@@ -9,12 +9,19 @@ import com.facebook.react.uimanager.ViewManager;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class ReactNativeConfigPackage implements ReactPackage {
+    Map<String, Object> constants;
+
+    public ReactNativeConfigPackage(Map<String, Object> constants) {
+        this.constants = constants;
+    }
+
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         return Arrays.<NativeModule>asList(
-            new ReactNativeConfigModule(reactContext)
+            new ReactNativeConfigModule(reactContext, constants)
         );
     }
 
