@@ -24,6 +24,11 @@ android {
         targetSdkVersion safeExtGet("targetSdkVersion", 26)
         versionCode 1
         versionName "1.0"
+        rootProject.env.each { k, v ->
+            def escaped = v.replaceAll("%","\\\\u0025")
+            buildConfigField "String", k, "\"$v\""
+            resValue "string", k, "\"$escaped\""
+        }
     }
     lintOptions {
         abortOnError false
