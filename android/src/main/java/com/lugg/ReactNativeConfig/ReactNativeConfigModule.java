@@ -1,17 +1,21 @@
 package com.lugg.ReactNativeConfig;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.util.Log;
+
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.ReactMethod;
 
+import java.lang.ClassNotFoundException;
+import java.lang.IllegalAccessException;
+import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.HashMap;
 
 public class ReactNativeConfigModule extends ReactContextBaseJavaModule {
-  Map<String, Object> constants;
-
-  public ReactNativeConfigModule(ReactApplicationContext reactContext, Map<String, Object> constants) {
+  public ReactNativeConfigModule(ReactApplicationContext reactContext) {
     super(reactContext);
-    this.constants = constants;
   }
 
   @Override
@@ -21,12 +25,16 @@ public class ReactNativeConfigModule extends ReactContextBaseJavaModule {
 
   @Override
   public Map<String, Object> getConstants() {
-    return this.constants;
+    final Map<String, Object> constants = new HashMap<>();
+      Field[] fields = BuildConfig.class.getDeclaredFields();
+      for(Field f: fields) {
+        try {
+          constants.put(f.getName(), f.get(null));
+        }
+        catch (IllegalAccessException e) {
+          Log.d("ReactNative", "ReactConfig: Could not access BuildConfig field " + f.getName());
+        }
+      }
+    return constants;
   }
-
-  @ReactMethod
-  public Map<String, Object> getValues() {
-    return this.constants;
-  }
-
 }
